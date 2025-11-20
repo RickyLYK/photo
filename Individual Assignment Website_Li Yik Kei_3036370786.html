@@ -1,0 +1,1049 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HomeMakers' Hub - Artisan Foods &amp; Cultural Heritage</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #FDF6F0;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    /* Navigation */
+    nav {
+      background-color: #FDF6F0;
+      padding: 1.5rem 2rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .nav-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #5F7161;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: #5F7161;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+      cursor: pointer;
+    }
+
+    .nav-links a:hover {
+      color: #D89B7D;
+    }
+
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(135deg, rgba(88, 113, 97, 0.9), rgba(216, 155, 125, 0.85)), 
+                  url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%235F7161" width="1200" height="600"/></svg>');
+      background-size: cover;
+      background-position: center;
+      padding: 8rem 2rem;
+      text-align: center;
+      color: white;
+    }
+
+    .hero-content {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.5rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.2;
+    }
+
+    .hero p {
+      font-size: 1.3rem;
+      margin-bottom: 2.5rem;
+      opacity: 0.95;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 1rem 2.5rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-primary {
+      background-color: #D89B7D;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #C68563;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(216, 155, 125, 0.4);
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      color: white;
+      border: 2px solid white;
+    }
+
+    .btn-secondary:hover {
+      background-color: white;
+      color: #5F7161;
+    }
+
+    /* Section Styles */
+    .section {
+      padding: 5rem 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      text-align: center;
+      margin-bottom: 1rem;
+      color: #5F7161;
+    }
+
+    .section-subtitle {
+      text-align: center;
+      font-size: 1.1rem;
+      color: #666;
+      margin-bottom: 3rem;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Featured Collections */
+    .collections-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .collection-card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+
+    .collection-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+
+    .collection-image {
+      width: 100%;
+      height: 280px;
+      background: linear-gradient(135deg, #D89B7D, #5F7161);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5rem;
+    }
+
+    .collection-content {
+      padding: 2rem;
+    }
+
+    .collection-content h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      margin-bottom: 0.8rem;
+      color: #5F7161;
+    }
+
+    .collection-content p {
+      color: #666;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Maker Cards */
+    .makers-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2.5rem;
+      margin-top: 2rem;
+    }
+
+    .maker-card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      transition: transform 0.3s ease;
+    }
+
+    .maker-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .maker-photo {
+      width: 100%;
+      height: 280px;
+      background: linear-gradient(135deg, #5F7161, #D89B7D);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5rem;
+      color: white;
+    }
+
+    .maker-info {
+      padding: 2rem;
+    }
+
+    .maker-info h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      margin-bottom: 0.5rem;
+      color: #5F7161;
+    }
+
+    .maker-specialty {
+      color: #D89B7D;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .maker-story {
+      color: #666;
+      line-height: 1.7;
+    }
+
+    /* Product Grid */
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .product-card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+
+    .product-image {
+      width: 100%;
+      height: 240px;
+      background: linear-gradient(135deg, #D89B7D, #5F7161);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+    }
+
+    .product-info {
+      padding: 1.5rem;
+    }
+
+    .product-info h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+      color: #5F7161;
+    }
+
+    .product-maker {
+      color: #D89B7D;
+      font-size: 0.9rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .product-price {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #5F7161;
+      margin-bottom: 1rem;
+    }
+
+    /* Countdown Timer */
+    .countdown {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin: 2rem 0;
+    }
+
+    .countdown-item {
+      background: white;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      text-align: center;
+    }
+
+    .countdown-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #D89B7D;
+    }
+
+    .countdown-label {
+      font-size: 0.85rem;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Mission Section */
+    .mission {
+      background: white;
+      padding: 5rem 2rem;
+      margin: 3rem 0;
+    }
+
+    .mission-content {
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .mission-content h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      color: #5F7161;
+      margin-bottom: 1.5rem;
+    }
+
+    .mission-content p {
+      font-size: 1.2rem;
+      color: #666;
+      line-height: 1.8;
+    }
+
+    /* Filters */
+    .filters {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .filter-btn {
+      padding: 0.8rem 1.5rem;
+      background: white;
+      border: 2px solid #D89B7D;
+      color: #D89B7D;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+
+    .filter-btn:hover, .filter-btn.active {
+      background: #D89B7D;
+      color: white;
+    }
+
+    /* Footer */
+    footer {
+      background: #5F7161;
+      color: white;
+      padding: 3rem 2rem 2rem;
+      margin-top: 5rem;
+    }
+
+    .footer-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .footer-content p {
+      margin-bottom: 0.5rem;
+      opacity: 0.9;
+    }
+
+    /* Page Content Container */
+    .page-content {
+      display: none;
+    }
+
+    .page-content.active {
+      display: block;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+
+      .hero p {
+        font-size: 1.1rem;
+      }
+
+      .nav-links {
+        gap: 1.5rem;
+      }
+
+      .section {
+        padding: 3rem 1.5rem;
+      }
+
+      .collections-grid,
+      .makers-grid,
+      .products-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body><!-- Navigation -->
+  <nav>
+   <div class="nav-container">
+    <div class="logo">
+     HomeMakers' Hub
+    </div>
+    <ul class="nav-links">
+     <li><a data-page="home">Home</a></li>
+     <li><a data-page="makers">Our Makers</a></li>
+     <li><a data-page="collections">Festive Collections</a></li>
+     <li><a data-page="shop">Shop</a></li>
+     <li><a data-page="contact">Contact</a></li>
+    </ul>
+   </div>
+  </nav><!-- Home Page -->
+  <div id="home-page" class="page-content active"><!-- Hero Section -->
+   <section class="hero">
+    <div class="hero-content">
+     <h1 id="hero-title">Taste the Authentic. Support a Home Kitchen.</h1>
+     <p id="hero-subtitle">Connecting you with local artisan food makers who preserve culinary traditions</p>
+     <div class="cta-buttons"><button class="btn btn-primary" id="primary-cta" onclick="navigateToPage('collections')">Pre-Order Now</button> <button class="btn btn-secondary" id="secondary-cta" onclick="navigateToPage('makers')">Meet Our Makers</button>
+     </div>
+    </div>
+   </section><!-- Mission Section -->
+   <section class="mission">
+    <div class="mission-content">
+     <h2 id="mission-title">Our Mission</h2>
+     <p id="mission-text">We believe in preserving culinary traditions while empowering home-based food producers. Every purchase supports a local artisan, celebrates cultural heritage, and brings authentic flavors to your table.</p>
+    </div>
+   </section><!-- Featured Collections -->
+   <section class="section">
+    <h2 class="section-title">Featured Festive Collections</h2>
+    <p class="section-subtitle">Celebrate traditions with authentic foods made by passionate artisans</p>
+    <div class="collections-grid">
+     <div class="collection-card" onclick="navigateToPage('collections')">
+      <div class="collection-image">
+       🥮
+      </div>
+      <div class="collection-content">
+       <h3>Mid-Autumn Festival</h3>
+       <p>Traditional mooncakes handcrafted with authentic recipes passed down through generations</p><button class="btn btn-primary">Explore Collection</button>
+      </div>
+     </div>
+     <div class="collection-card" onclick="navigateToPage('collections')">
+      <div class="collection-image">
+       🍚
+      </div>
+      <div class="collection-content">
+       <h3>Chinese New Year</h3>
+       <p>Celebrate prosperity with homemade sticky rice cakes and festive delicacies</p><button class="btn btn-primary">Explore Collection</button>
+      </div>
+     </div>
+     <div class="collection-card" onclick="navigateToPage('collections')">
+      <div class="collection-image">
+       🫔
+      </div>
+      <div class="collection-content">
+       <h3>Dragon Boat Festival</h3>
+       <p>Authentic zongzi wrapped with care, featuring traditional and creative fillings</p><button class="btn btn-primary">Explore Collection</button>
+      </div>
+     </div>
+    </div>
+   </section>
+  </div><!-- Our Makers Page -->
+  <div id="makers-page" class="page-content">
+   <section class="section">
+    <h2 class="section-title">Meet Our Makers</h2>
+    <p class="section-subtitle">Every dish tells a story. Get to know the passionate artisans behind your favorite foods.</p>
+    <div class="makers-grid">
+     <div class="maker-card">
+      <div class="maker-photo">
+       👩‍🍳
+      </div>
+      <div class="maker-info">
+       <h3>Lin Chen</h3>
+       <div class="maker-specialty">
+        Traditional Mooncakes
+       </div>
+       <p class="maker-story">Lin learned mooncake-making from her grandmother in Guangzhou. For 15 years, she's been preserving family recipes while adding her own creative touch. Each mooncake is handcrafted with premium ingredients and love.</p>
+      </div>
+     </div>
+     <div class="maker-card">
+      <div class="maker-photo">
+       👨‍🍳
+      </div>
+      <div class="maker-info">
+       <h3>David Wong</h3>
+       <div class="maker-specialty">
+        Artisan Zongzi
+       </div>
+       <p class="maker-story">David's zongzi recipes come from his Hakka heritage. After retiring as a teacher, he turned his passion into a small business, bringing authentic flavors to the community while supporting local farmers.</p>
+      </div>
+     </div>
+     <div class="maker-card">
+      <div class="maker-photo">
+       👩‍🍳
+      </div>
+      <div class="maker-info">
+       <h3>Mei Tan</h3>
+       <div class="maker-specialty">
+        Festival Delicacies
+       </div>
+       <p class="maker-story">Mei specializes in Chinese New Year treats, from sticky rice cakes to prosperity dumplings. As a single mother, this home business allows her to care for her children while sharing her culinary heritage.</p>
+      </div>
+     </div>
+    </div>
+   </section>
+  </div><!-- Festive Collections Page -->
+  <div id="collections-page" class="page-content">
+   <section class="section">
+    <h2 class="section-title">Festive Collections</h2>
+    <p class="section-subtitle">Pre-order authentic festive foods for upcoming celebrations</p><!-- Countdown Timer -->
+    <div class="countdown">
+     <div class="countdown-item">
+      <div class="countdown-number" id="days">
+       45
+      </div>
+      <div class="countdown-label">
+       Days
+      </div>
+     </div>
+     <div class="countdown-item">
+      <div class="countdown-number" id="hours">
+       12
+      </div>
+      <div class="countdown-label">
+       Hours
+      </div>
+     </div>
+     <div class="countdown-item">
+      <div class="countdown-number" id="minutes">
+       34
+      </div>
+      <div class="countdown-label">
+       Minutes
+      </div>
+     </div>
+    </div>
+    <p style="text-align: center; color: #D89B7D; font-weight: 600; margin-bottom: 3rem;">Until Mid-Autumn Festival</p>
+    <div class="collections-grid">
+     <div class="collection-card">
+      <div class="collection-image">
+       🥮
+      </div>
+      <div class="collection-content">
+       <h3>Classic Lotus Paste Mooncake</h3>
+       <p>Traditional white lotus paste with salted egg yolk. Lin's signature recipe.</p>
+       <div class="product-price">
+        $45.00 / box of 4
+       </div><button class="btn btn-primary">Pre-Order Now</button>
+      </div>
+     </div>
+     <div class="collection-card">
+      <div class="collection-image">
+       🥮
+      </div>
+      <div class="collection-content">
+       <h3>Modern Red Bean Mooncake</h3>
+       <p>Smooth red bean paste with a hint of osmanthus. A contemporary twist on tradition.</p>
+       <div class="product-price">
+        $42.00 / box of 4
+       </div><button class="btn btn-primary">Pre-Order Now</button>
+      </div>
+     </div>
+     <div class="collection-card">
+      <div class="collection-image">
+       🍚
+      </div>
+      <div class="collection-content">
+       <h3>Prosperity Rice Cake</h3>
+       <p>Sticky rice cake symbolizing rising fortune. Perfect for Lunar New Year.</p>
+       <div class="product-price">
+        $28.00 / cake
+       </div><button class="btn btn-primary">Pre-Order Now</button>
+      </div>
+     </div>
+    </div>
+   </section>
+  </div><!-- Shop Page -->
+  <div id="shop-page" class="page-content">
+   <section class="section">
+    <h2 class="section-title">Shop All Products</h2>
+    <p class="section-subtitle">Browse our complete collection of artisan foods</p><!-- Filters -->
+    <div class="filters"><button class="filter-btn active">All Products</button> <button class="filter-btn">Mooncakes</button> <button class="filter-btn">Rice Cakes</button> <button class="filter-btn">Zongzi</button> <button class="filter-btn">By Lin Chen</button> <button class="filter-btn">By David Wong</button>
+    </div>
+    <div class="products-grid">
+     <div class="product-card">
+      <div class="product-image">
+       🥮
+      </div>
+      <div class="product-info">
+       <h4>Classic Lotus Mooncake</h4>
+       <div class="product-maker">
+        By Lin Chen
+       </div>
+       <div class="product-price">
+        $45.00
+       </div><button class="btn btn-primary" style="width: 100%;">Add to Cart</button>
+      </div>
+     </div>
+     <div class="product-card">
+      <div class="product-image">
+       🥮
+      </div>
+      <div class="product-info">
+       <h4>Red Bean Mooncake</h4>
+       <div class="product-maker">
+        By Lin Chen
+       </div>
+       <div class="product-price">
+        $42.00
+       </div><button class="btn btn-primary" style="width: 100%;">Add to Cart</button>
+      </div>
+     </div>
+     <div class="product-card">
+      <div class="product-image">
+       🫔
+      </div>
+      <div class="product-info">
+       <h4>Pork &amp; Mushroom Zongzi</h4>
+       <div class="product-maker">
+        By David Wong
+       </div>
+       <div class="product-price">
+        $32.00
+       </div><button class="btn btn-primary" style="width: 100%;">Add to Cart</button>
+      </div>
+     </div>
+     <div class="product-card">
+      <div class="product-image">
+       🫔
+      </div>
+      <div class="product-info">
+       <h4>Sweet Red Bean Zongzi</h4>
+       <div class="product-maker">
+        By David Wong
+       </div>
+       <div class="product-price">
+        $28.00
+       </div><button class="btn btn-primary" style="width: 100%;">Add to Cart</button>
+      </div>
+     </div>
+     <div class="product-card">
+      <div class="product-image">
+       🍚
+      </div>
+      <div class="product-info">
+       <h4>Prosperity Rice Cake</h4>
+       <div class="product-maker">
+        By Mei Tan
+       </div>
+       <div class="product-price">
+        $28.00
+       </div><button class="btn btn-primary" style="width: 100%;">Add to Cart</button>
+      </div>
+     </div>
+     <div class="product-card">
+      <div class="product-image">
+       🥟
+      </div>
+      <div class="product-info">
+       <h4>Fortune Dumplings</h4>
+       <div class="product-maker">
+        By Mei Tan
+       </div>
+       <div class="product-price">
+        $35.00
+       </div><button class="btn btn-primary" style="width: 100%;">Add to Cart</button>
+      </div>
+     </div>
+    </div>
+   </section>
+  </div><!-- Contact Page -->
+  <div id="contact-page" class="page-content">
+   <section class="section">
+    <h2 class="section-title">Get In Touch</h2>
+    <p class="section-subtitle">Have questions about our products or makers? We'd love to hear from you!</p>
+    <div style="max-width: 800px; margin: 3rem auto;">
+     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 3rem;"><!-- Email Card -->
+      <div style="background: white; padding: 2.5rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); text-align: center;">
+       <div style="font-size: 3rem; margin-bottom: 1rem;">
+        📧
+       </div>
+       <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; color: #5F7161; margin-bottom: 1rem;">Email Us</h3><a href="mailto:rickyabc@connect.hku.hk" style="color: #D89B7D; text-decoration: none; font-size: 1.1rem; font-weight: 500;">rickyabc@connect.hku.hk</a>
+      </div><!-- Phone Card -->
+      <div style="background: white; padding: 2.5rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); text-align: center;">
+       <div style="font-size: 3rem; margin-bottom: 1rem;">
+        📞
+       </div>
+       <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; color: #5F7161; margin-bottom: 1rem;">Call Us</h3><a href="tel:87654321" style="color: #D89B7D; text-decoration: none; font-size: 1.1rem; font-weight: 500;">8765 4321</a>
+      </div>
+     </div><!-- Contact Form -->
+     <div style="background: white; padding: 3rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
+      <h3 style="font-family: 'Playfair Display', serif; font-size: 2rem; color: #5F7161; margin-bottom: 2rem; text-align: center;">Send Us a Message</h3>
+      <form id="contact-form">
+       <div style="margin-bottom: 1.5rem;"><label for="contact-name" style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #5F7161;">Your Name</label> <input type="text" id="contact-name" required style="width: 100%; padding: 0.9rem; border: 2px solid #e0e0e0; border-radius: 6px; font-size: 1rem; font-family: 'Inter', sans-serif; transition: border-color 0.3s ease;">
+       </div>
+       <div style="margin-bottom: 1.5rem;"><label for="contact-email" style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #5F7161;">Your Email</label> <input type="email" id="contact-email" required style="width: 100%; padding: 0.9rem; border: 2px solid #e0e0e0; border-radius: 6px; font-size: 1rem; font-family: 'Inter', sans-serif; transition: border-color 0.3s ease;">
+       </div>
+       <div style="margin-bottom: 1.5rem;"><label for="contact-subject" style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #5F7161;">Subject</label> <input type="text" id="contact-subject" required style="width: 100%; padding: 0.9rem; border: 2px solid #e0e0e0; border-radius: 6px; font-size: 1rem; font-family: 'Inter', sans-serif; transition: border-color 0.3s ease;">
+       </div>
+       <div style="margin-bottom: 2rem;"><label for="contact-message" style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #5F7161;">Message</label> <textarea id="contact-message" required rows="6" style="width: 100%; padding: 0.9rem; border: 2px solid #e0e0e0; border-radius: 6px; font-size: 1rem; font-family: 'Inter', sans-serif; resize: vertical; transition: border-color 0.3s ease;"></textarea>
+       </div><button type="submit" class="btn btn-primary" style="width: 100%;">Send Message</button>
+       <div id="form-message" style="margin-top: 1rem; padding: 1rem; border-radius: 6px; display: none;"></div>
+      </form>
+     </div>
+    </div>
+   </section>
+  </div><!-- Footer -->
+  <footer>
+   <div class="footer-content">
+    <p>© 2024 HomeMakers' Hub. Empowering artisans, preserving traditions.</p>
+    <p>Supporting local communities one dish at a time.</p>
+   </div>
+  </footer>
+  <script>
+    // Configuration object
+    const defaultConfig = {
+      background_color: '#FDF6F0',
+      surface_color: '#FFFFFF',
+      text_color: '#333333',
+      primary_action_color: '#D89B7D',
+      secondary_action_color: '#5F7161',
+      font_family: 'Inter',
+      font_size: 16,
+      hero_title: 'Taste the Authentic. Support a Home Kitchen.',
+      hero_subtitle: 'Connecting you with local artisan food makers who preserve culinary traditions',
+      mission_title: 'Our Mission',
+      mission_text: 'We believe in preserving culinary traditions while empowering home-based food producers. Every purchase supports a local artisan, celebrates cultural heritage, and brings authentic flavors to your table.',
+      primary_cta: 'Pre-Order Now',
+      secondary_cta: 'Meet Our Makers'
+    };
+
+    // Page navigation
+    function navigateToPage(pageName) {
+      const pages = document.querySelectorAll('.page-content');
+      pages.forEach(page => page.classList.remove('active'));
+      
+      const targetPage = document.getElementById(`${pageName}-page`);
+      if (targetPage) {
+        targetPage.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    // Navigation link handlers
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const page = link.getAttribute('data-page');
+        navigateToPage(page);
+      });
+    });
+
+    // Filter button handlers
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+
+    // Contact form handler
+    const contactForm = document.getElementById('contact-form');
+    if (contactForm) {
+      contactForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const formMessage = document.getElementById('form-message');
+        formMessage.style.display = 'block';
+        formMessage.style.backgroundColor = '#d4edda';
+        formMessage.style.color = '#155724';
+        formMessage.style.border = '1px solid #c3e6cb';
+        formMessage.textContent = 'Thank you for your message! We\'ll get back to you soon.';
+        
+        contactForm.reset();
+        
+        setTimeout(() => {
+          formMessage.style.display = 'none';
+        }, 5000);
+      });
+      
+      // Add focus styles to form inputs
+      const inputs = contactForm.querySelectorAll('input, textarea');
+      inputs.forEach(input => {
+        input.addEventListener('focus', () => {
+          input.style.borderColor = '#D89B7D';
+          input.style.outline = 'none';
+        });
+        input.addEventListener('blur', () => {
+          input.style.borderColor = '#e0e0e0';
+        });
+      });
+    }
+
+    // Countdown timer
+    function updateCountdown() {
+      const targetDate = new Date();
+      targetDate.setDate(targetDate.getDate() + 45);
+      targetDate.setHours(12, 34, 0, 0);
+      
+      const now = new Date();
+      const diff = targetDate - now;
+      
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      
+      const daysEl = document.getElementById('days');
+      const hoursEl = document.getElementById('hours');
+      const minutesEl = document.getElementById('minutes');
+      
+      if (daysEl) daysEl.textContent = days;
+      if (hoursEl) hoursEl.textContent = hours;
+      if (minutesEl) minutesEl.textContent = minutes;
+    }
+
+    setInterval(updateCountdown, 60000);
+    updateCountdown();
+
+    // Element SDK implementation
+    async function onConfigChange(config) {
+      const customFont = config.font_family || defaultConfig.font_family;
+      const baseFontStack = 'Inter, sans-serif';
+      const displayFontStack = 'Playfair Display, serif';
+      const baseSize = config.font_size || defaultConfig.font_size;
+
+      // Apply colors
+      document.body.style.backgroundColor = config.background_color || defaultConfig.background_color;
+      document.body.style.color = config.text_color || defaultConfig.text_color;
+      
+      // Navigation
+      const nav = document.querySelector('nav');
+      if (nav) nav.style.backgroundColor = config.background_color || defaultConfig.background_color;
+      
+      // Primary action buttons
+      document.querySelectorAll('.btn-primary').forEach(btn => {
+        btn.style.backgroundColor = config.primary_action_color || defaultConfig.primary_action_color;
+      });
+      
+      // Secondary action elements
+      const logo = document.querySelector('.logo');
+      if (logo) logo.style.color = config.secondary_action_color || defaultConfig.secondary_action_color;
+      
+      document.querySelectorAll('.nav-links a').forEach(link => {
+        link.style.color = config.secondary_action_color || defaultConfig.secondary_action_color;
+      });
+      
+      document.querySelectorAll('.section-title, .maker-info h3, .collection-content h3, .product-info h4, .product-price').forEach(el => {
+        el.style.color = config.secondary_action_color || defaultConfig.secondary_action_color;
+      });
+      
+      // Surface color (white cards)
+      document.querySelectorAll('.collection-card, .maker-card, .product-card, .countdown-item, .mission').forEach(card => {
+        card.style.backgroundColor = config.surface_color || defaultConfig.surface_color;
+      });
+      
+      // Apply fonts
+      document.body.style.fontFamily = `${customFont}, ${baseFontStack}`;
+      
+      document.querySelectorAll('.logo, .hero h1, .section-title, .collection-content h3, .maker-info h3, .product-info h4, .mission-content h2, .countdown-number').forEach(el => {
+        el.style.fontFamily = `${customFont}, ${displayFontStack}`;
+      });
+      
+      // Apply font sizes
+      document.body.style.fontSize = `${baseSize}px`;
+      
+      const heroTitle = document.querySelector('.hero h1');
+      if (heroTitle) heroTitle.style.fontSize = `${baseSize * 2.2}px`;
+      
+      const heroSubtitle = document.querySelector('.hero p');
+      if (heroSubtitle) heroSubtitle.style.fontSize = `${baseSize * 1.1}px`;
+      
+      document.querySelectorAll('.section-title, .mission-content h2').forEach(el => {
+        el.style.fontSize = `${baseSize * 1.6}px`;
+      });
+      
+      document.querySelectorAll('.section-subtitle, .mission-content p').forEach(el => {
+        el.style.fontSize = `${baseSize * 1.05}px`;
+      });
+      
+      document.querySelectorAll('.btn').forEach(btn => {
+        btn.style.fontSize = `${baseSize * 0.95}px`;
+      });
+      
+      // Apply styles to contact form elements
+      const contactInputs = document.querySelectorAll('#contact-form input, #contact-form textarea');
+      contactInputs.forEach(input => {
+        input.style.fontFamily = `${customFont}, ${baseFontStack}`;
+        input.style.fontSize = `${baseSize}px`;
+      });
+      
+      const contactLabels = document.querySelectorAll('#contact-form label');
+      contactLabels.forEach(label => {
+        label.style.fontSize = `${baseSize}px`;
+      });
+
+      // Update editable text content
+      const heroTitleEl = document.getElementById('hero-title');
+      if (heroTitleEl) heroTitleEl.textContent = config.hero_title || defaultConfig.hero_title;
+      
+      const heroSubtitleEl = document.getElementById('hero-subtitle');
+      if (heroSubtitleEl) heroSubtitleEl.textContent = config.hero_subtitle || defaultConfig.hero_subtitle;
+      
+      const missionTitleEl = document.getElementById('mission-title');
+      if (missionTitleEl) missionTitleEl.textContent = config.mission_title || defaultConfig.mission_title;
+      
+      const missionTextEl = document.getElementById('mission-text');
+      if (missionTextEl) missionTextEl.textContent = config.mission_text || defaultConfig.mission_text;
+      
+      const primaryCtaEl = document.getElementById('primary-cta');
+      if (primaryCtaEl) primaryCtaEl.textContent = config.primary_cta || defaultConfig.primary_cta;
+      
+      const secondaryCtaEl = document.getElementById('secondary-cta');
+      if (secondaryCtaEl) secondaryCtaEl.textContent = config.secondary_cta || defaultConfig.secondary_cta;
+    }
+
+    // Initialize Element SDK
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig: defaultConfig,
+        onConfigChange: onConfigChange,
+        mapToCapabilities: (config) => ({
+          recolorables: [
+            {
+              get: () => config.background_color || defaultConfig.background_color,
+              set: (value) => {
+                config.background_color = value;
+                window.elementSdk.setConfig({ background_color: value });
+              }
+            },
+            {
+              get: () => config.surface_color || defaultConfig.surface_color,
+              set: (value) => {
+                config.surface_color = value;
+                window.elementSdk.setConfig({ surface_color: value });
+              }
+            },
+            {
+              get: () => config.text_color || defaultConfig.text_color,
+              set: (value) => {
+                config.text_color = value;
+                window.elementSdk.setConfig({ text_color: value });
+              }
+            },
+            {
+              get: () => config.primary_action_color || defaultConfig.primary_action_color,
+              set: (value) => {
+                config.primary_action_color = value;
+                window.elementSdk.setConfig({ primary_action_color: value });
+              }
+            },
+            {
+              get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
+              set: (value) => {
+                config.secondary_action_color = value;
+                window.elementSdk.setConfig({ secondary_action_color: value });
+              }
+            }
+          ],
+          borderables: [],
+          fontEditable: {
+            get: () => config.font_family || defaultConfig.font_family,
+            set: (value) => {
+              config.font_family = value;
+              window.elementSdk.setConfig({ font_family: value });
+            }
+          },
+          fontSizeable: {
+            get: () => config.font_size || defaultConfig.font_size,
+            set: (value) => {
+              config.font_size = value;
+              window.elementSdk.setConfig({ font_size: value });
+            }
+          }
+        }),
+        mapToEditPanelValues: (config) => new Map([
+          ['hero_title', config.hero_title || defaultConfig.hero_title],
+          ['hero_subtitle', config.hero_subtitle || defaultConfig.hero_subtitle],
+          ['mission_title', config.mission_title || defaultConfig.mission_title],
+          ['mission_text', config.mission_text || defaultConfig.mission_text],
+          ['primary_cta', config.primary_cta || defaultConfig.primary_cta],
+          ['secondary_cta', config.secondary_cta || defaultConfig.secondary_cta]
+        ])
+      });
+    }
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a165fe981005e08',t:'MTc2MzYyNTIxNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
