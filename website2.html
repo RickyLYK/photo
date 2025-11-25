@@ -1,0 +1,1962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HKU Study Partner</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .app-container {
+            max-width: 400px;
+            margin: 0 auto;
+            height: 100vh;
+            background: white;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            background: #50C878;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: -2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .main-content {
+            height: calc(100vh - 140px);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .swipe-container {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .profile-card {
+            width: 320px;
+            height: 500px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            position: relative;
+            cursor: grab;
+            transition: transform 0.3s ease;
+            overflow: hidden;
+        }
+
+        .profile-card:active {
+            cursor: grabbing;
+        }
+
+        .profile-card.swipe-left {
+            animation: swipeLeft 0.5s ease-out forwards;
+        }
+
+        .profile-card.swipe-right {
+            animation: swipeRight 0.5s ease-out forwards;
+        }
+
+        @keyframes swipeLeft {
+            to {
+                transform: translateX(-100vw) rotate(-30deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes swipeRight {
+            to {
+                transform: translateX(100vw) rotate(30deg);
+                opacity: 0;
+            }
+        }
+
+        .major-tag {
+            background: #50C878;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            z-index: 2;
+        }
+
+        .profile-image {
+            width: 100%;
+            height: 350px;
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            color: white;
+        }
+
+        .hashtags {
+            position: absolute;
+            bottom: 80px;
+            left: 15px;
+            right: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            z-index: 2;
+        }
+
+        .hashtag {
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: grab;
+            user-select: none;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255,255,255,0.3);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .hashtag:hover {
+            transform: translateY(-2px) scale(1.05);
+            background: rgba(255,255,255,1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+            border-color: #50C878;
+        }
+
+        .hashtag:active {
+            cursor: grabbing;
+            transform: scale(0.95);
+        }
+
+        .hashtag.dragging {
+            transform: rotate(5deg) scale(1.1);
+            z-index: 1000;
+            opacity: 0.8;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .hashtag::before {
+            content: '🏷️';
+            font-size: 11px;
+            opacity: 0.7;
+        }
+
+        .hashtag.editing {
+            background: #50C878;
+            color: white;
+            border-color: #45b369;
+        }
+
+        .hashtag-input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: inherit;
+            font-size: inherit;
+            font-weight: inherit;
+            width: 80px;
+            text-align: center;
+        }
+
+        .hashtag-controls {
+            position: absolute;
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            border-radius: 15px;
+            padding: 5px;
+            display: none;
+            gap: 5px;
+            z-index: 1001;
+        }
+
+        .hashtag-controls.show {
+            display: flex;
+        }
+
+        .hashtag-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 6px 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.3s;
+        }
+
+        .hashtag-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .add-hashtag-btn {
+            background: rgba(80, 200, 120, 0.9);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .add-hashtag-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            background: rgba(80, 200, 120, 1);
+            box-shadow: 0 4px 15px rgba(80, 200, 120, 0.4);
+        }
+
+        .add-hashtag-btn::before {
+            content: '➕';
+            font-size: 11px;
+        }
+
+        .profile-name {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 400px;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 10px;
+            transition: background 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .nav-btn.active {
+            color: #50C878;
+        }
+
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            font-size: 20px;
+        }
+
+        .nav-text {
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .page {
+            display: none;
+            height: 100%;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .match-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .match-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 300px;
+        }
+
+        .match-content h2 {
+            color: #50C878;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background: #50C878;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: #45b369;
+        }
+
+        .booking-item {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .booking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .available-count {
+            background: #50C878;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+        }
+
+        .forum-post {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #50C878;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .message-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .message-item:hover {
+            background: #f8f9fa;
+        }
+
+        .chat-window {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 400px;
+            height: 100vh;
+            background: white;
+            z-index: 500;
+            display: none;
+        }
+
+        .chat-header {
+            background: #50C878;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chat-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 8px;
+            border-radius: 50%;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-messages {
+            height: calc(100vh - 140px);
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+        }
+
+        .message.sent {
+            justify-content: flex-end;
+        }
+
+        .message-bubble {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            word-wrap: break-word;
+        }
+
+        .message.sent .message-bubble {
+            background: #50C878;
+            color: white;
+        }
+
+        .message.received .message-bubble {
+            background: #f1f1f1;
+            color: #333;
+        }
+
+        .chat-input {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 400px;
+            background: white;
+            padding: 15px;
+            display: flex;
+            gap: 10px;
+            border-top: 1px solid #eee;
+        }
+
+        .message-input {
+            flex: 1;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            padding: 12px 16px;
+            outline: none;
+        }
+
+        .send-btn {
+            background: #50C878;
+            border: none;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 50%;
+            cursor: pointer;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .calendar-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: none;
+        }
+
+        .call-window {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 400px;
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            z-index: 600;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .call-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .call-name {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .call-status {
+            font-size: 16px;
+            opacity: 0.8;
+            margin-bottom: 40px;
+        }
+
+        .end-call-btn {
+            background: #ff4757;
+            border: none;
+            color: white;
+            padding: 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            width: 60px;
+            height: 60px;
+            font-size: 20px;
+        }
+
+        .space-booking-mini {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            width: 250px;
+            display: none;
+            z-index: 2100;
+            cursor: move;
+            user-select: none;
+        }
+
+        .space-booking-mini.dragging {
+            opacity: 0.8;
+            transform: scale(1.05);
+            transition: none;
+        }
+
+        .drag-handle {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 40px;
+            cursor: move;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ccc;
+            font-size: 18px;
+        }
+
+        .drag-handle:hover {
+            color: #50C878;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .profile-page {
+            padding: 0;
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, #50C878 0%, #45b369 100%);
+            border-radius: 0 0 25px 25px;
+            padding: 30px 20px 20px;
+            margin: -20px -20px 20px -20px;
+            color: white;
+            position: relative;
+        }
+
+        .profile-cover {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .profile-avatar-large {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .profile-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4ade80;
+        }
+
+        .status-indicator.online {
+            background: #4ade80;
+            box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.3);
+        }
+
+        .profile-basic-info h2 {
+            margin: 0 0 5px 0;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .profile-subtitle {
+            margin: 0 0 20px 0;
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .profile-stats {
+            display: flex;
+            justify-content: space-around;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .action-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 16px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn.primary {
+            background: #50C878;
+            color: white;
+        }
+
+        .action-btn.primary:hover {
+            background: #45b369;
+            transform: translateY(-2px);
+        }
+
+        .action-btn.secondary {
+            background: #f8f9fa;
+            color: #333;
+            border: 1px solid #e9ecef;
+        }
+
+        .action-btn.secondary:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+
+        .action-icon {
+            font-size: 16px;
+        }
+
+        .profile-section {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .profile-section:hover {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .section-header {
+            margin-bottom: 15px;
+        }
+
+        .section-header h3 {
+            margin: 0;
+            font-size: 18px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .preference-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .preference-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .preference-icon {
+            font-size: 20px;
+            width: 32px;
+            text-align: center;
+        }
+
+        .preference-content {
+            flex: 1;
+        }
+
+        .preference-title {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 2px;
+        }
+
+        .preference-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .achievement-badge {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .achievement-badge.earned {
+            background: linear-gradient(135deg, #50C878 0%, #45b369 100%);
+            color: white;
+            border-color: #50C878;
+        }
+
+        .achievement-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .badge-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .badge-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .badge-desc {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .activity-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .activity-icon {
+            font-size: 20px;
+            width: 32px;
+            text-align: center;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 2px;
+        }
+
+        .activity-time {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .settings-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .setting-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .setting-item:hover {
+            background: #f8f9fa;
+        }
+
+        .setting-item.logout-item {
+            color: #dc3545;
+        }
+
+        .setting-item.logout-item:hover {
+            background: #fff5f5;
+        }
+
+        .setting-icon {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .setting-content {
+            flex: 1;
+        }
+
+        .setting-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .setting-desc {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .setting-arrow {
+            font-size: 18px;
+            color: #ccc;
+        }
+
+        .profile-info {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .new-post-btn {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            background: #50C878;
+            border: none;
+            color: white;
+            padding: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+            box-shadow: 0 4px 15px rgba(80, 200, 120, 0.4);
+            z-index: 100;
+        }
+
+        .post-form {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .post-input {
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .time-slot {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .time-slot:hover {
+            background: #50C878;
+            color: white;
+        }
+
+        .time-slot.selected {
+            background: #50C878;
+            color: white;
+        }
+
+        .login-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #50C878 0%, #45b369 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            width: 320px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .login-logo {
+            font-size: 48px;
+            color: #50C878;
+            margin-bottom: 10px;
+        }
+
+        .login-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 30px;
+            letter-spacing: -1px;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .login-input:focus {
+            border-color: #50C878;
+        }
+
+        .login-btn {
+            width: 100%;
+            background: #50C878;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .login-btn:hover {
+            background: #45b369;
+        }
+
+        .login-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .login-footer {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .login-footer a {
+            color: #50C878;
+            text-decoration: none;
+        }
+
+        .error-message {
+            background: #ff4757;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .time-options-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: none;
+            width: 300px;
+        }
+
+        .time-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-bottom: 8px;
+        }
+
+        .time-option:hover {
+            background: #f8f9fa;
+        }
+
+        .time-option.selected {
+            background: #50C878;
+            color: white;
+        }
+
+        .group-member {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+
+        .remove-member {
+            background: #ff4757;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .settings-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: none;
+            width: 350px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .notification-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 24px;
+            background: #ccc;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: #50C878;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(26px);
+        }
+
+        .help-chat {
+            height: 300px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            margin: 15px 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .help-chat-header {
+            background: #50C878;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px 10px 0 0;
+            font-weight: bold;
+        }
+
+        .help-chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background: #f8f9fa;
+        }
+
+        .help-chat-input {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+            background: white;
+            border-radius: 0 0 10px 10px;
+        }
+
+        .help-message {
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            border-radius: 15px;
+            max-width: 80%;
+        }
+
+        .help-message.bot {
+            background: #e3f2fd;
+            align-self: flex-start;
+        }
+
+        .help-message.user {
+            background: #50C878;
+            color: white;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+
+        .color-picker-container {
+            margin: 15px 0;
+        }
+
+        .color-options {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .color-option {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .color-option.selected {
+            border-color: #333;
+            transform: scale(1.1);
+        }
+
+        .color-option:hover {
+            transform: scale(1.05);
+        }
+
+        .help-options {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .help-option-btn {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #50C878;
+            background: white;
+            color: #50C878;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .help-option-btn.active {
+            background: #50C878;
+            color: white;
+        }
+
+        .help-option-btn:hover {
+            background: #50C878;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div class="login-page" id="loginPage">
+        <div class="login-container">
+            <div class="login-logo">🎓</div>
+            <div class="login-title">HKU Study Partner</div>
+            
+            <div class="error-message" id="errorMessage">
+                Invalid username or password. Please try again.
+            </div>
+            
+            <form onsubmit="handleLogin(event)">
+                <input 
+                    type="text" 
+                    class="login-input" 
+                    id="username" 
+                    placeholder="Username" 
+                    required
+                >
+                <input 
+                    type="password" 
+                    class="login-input" 
+                    id="password" 
+                    placeholder="Password" 
+                    required
+                >
+                <button type="submit" class="login-btn" id="loginBtn">
+                    Sign In
+                </button>
+            </form>
+            
+            <div class="login-footer">
+                Don't have an account? <a href="#" onclick="showSignUp()">Sign up</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <div class="header">
+            HKU SP
+        </div>
+
+        <div class="main-content">
+            <!-- Home Page (Swipe Feature) -->
+            <div id="homePage" class="page active">
+                <div class="swipe-container">
+                    <div class="profile-card" id="profileCard">
+                        <div class="major-tag" id="majorTag">Information Management</div>
+                        <div class="profile-image" id="profileImage">👨‍🎓</div>
+                        <div class="hashtags" id="hashtags">
+                            <span class="hashtag" draggable="true" onclick="showHashtagControls(this)" ondragstart="startHashtagDrag(this)" ondragend="endHashtagDrag(this)">#fun-guy</span>
+                            <span class="hashtag" draggable="true" onclick="showHashtagControls(this)" ondragstart="startHashtagDrag(this)" ondragend="endHashtagDrag(this)">#hard-worker</span>
+                            <span class="hashtag" draggable="true" onclick="showHashtagControls(this)" ondragstart="startHashtagDrag(this)" ondragend="endHashtagDrag(this)">#Korean</span>
+                            <button class="add-hashtag-btn" onclick="addNewHashtag()">Add Tag</button>
+                        </div>
+                        <div class="profile-name" id="profileName">Ryan</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Book Space Page -->
+            <div id="bookPage" class="page">
+                <h2 style="margin-bottom: 20px; color: #50C878;">Book a Study Space</h2>
+                <div class="booking-item">
+                    <div class="booking-header">
+                        <h3>Main Library</h3>
+                        <span class="available-count">12 available</span>
+                    </div>
+                    <p>Study tables and quiet zones</p>
+                    <button class="btn" onclick="showTimeSlots('main-library')">Choose Time</button>
+                    <div id="main-library-slots" class="time-slots" style="display: none;">
+                        <div class="time-slot" onclick="selectTime(this, 'Main Library', '9:00 AM')">9:00 AM</div>
+                        <div class="time-slot" onclick="selectTime(this, 'Main Library', '11:00 AM')">11:00 AM</div>
+                        <div class="time-slot" onclick="selectTime(this, 'Main Library', '2:00 PM')">2:00 PM</div>
+                        <div class="time-slot" onclick="selectTime(this, 'Main Library', '4:00 PM')">4:00 PM</div>
+                        <div class="time-slot" onclick="selectTime(this, 'Main Library', '6:00 PM')">6:00 PM</div>
+                        <div class="time-slot" onclick="selectTime(this, 'Main Library', '8:00 PM')">8:00 PM</div>
+                    </div>
+                </div>
+                
+                <div class="booking-item">
+                    <div class="booking-header">
+                        <h3>Chi Wah Learning Commons</h3>
+                        <span class="available-count">8 available</span>
+                    </div>
+                    <p>Discussion rooms and group study areas</p>
+                    <button class="btn" onclick="showTimeSlots('chi-wah')">Choose Time</button>
+                    <div id="chi-wah-slots" class="time-slots" style="display: none;">
+                        <div class="time-slot" onclick="selectTime(this, 'Chi Wah', '10:00 AM')">10:00 AM</div>
+                        <div class="time-slot" onclick="selectTime(this, 'Chi Wah', '12:00 PM')">12:00 PM</div>
+                        <div class="time-slot" onclick="selectTime(this, 'Chi Wah', '3:00 PM')">3:00 PM</div>
+                        <div class="time-slot" onclick="selectTime(this, 'Chi Wah', '5:00 PM')">5:00 PM</div>
+                        <div class="time-slot" onclick="selectTime(this, 'Chi Wah', '7:00 PM')">7:00 PM</div>
+                        <div class="time-slot" onclick="selectTime(this, 'Chi Wah', '9:00 PM')">9:00 PM</div>
+                    </div>
+                </div>
+
+                <div class="booking-item">
+                    <div class="booking-header">
+                        <h3>Study Rooms</h3>
+                        <span class="available-count">5 available</span>
+                    </div>
+                    <p>Private study rooms for focused work</p>
+                    <button class="btn" onclick="showTimeSlots('study-rooms')">Choose Time</button>
+                    <div id="study-rooms-slots" class="time-slots" style="display: none;">
+                        <div class="time-slot" onclick="selectTime(this, 'Study Room', '9:30 AM')">9:30 AM</div>
+                        <div class="time-slot" onclick="selectTime(this, 'Study Room', '1:30 PM')">1:30 PM</div>
+                        <div class="time-slot" onclick="selectTime(this, 'Study Room', '4:30 PM')">4:30 PM</div>
+                        <div class="time-slot" onclick="selectTime(this, 'Study Room', '7:30 PM')">7:30 PM</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search/Forum Page -->
+            <div id="searchPage" class="page">
+                <h2 style="margin-bottom: 20px; color: #50C878;">Academic Forum</h2>
+                
+                <div class="post-form" id="postForm">
+                    <textarea class="post-input" placeholder="Share your academic thoughts or questions..."></textarea>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn" onclick="submitPost()">Post</button>
+                        <button class="btn" style="background: #6c757d;" onclick="cancelPost()">Cancel</button>
+                    </div>
+                </div>
+
+                <div id="forumPosts">
+                    <div class="forum-post">
+                        <div class="post-header">
+                            <div class="user-avatar">A</div>
+                            <div>
+                                <div style="font-weight: bold;">Alice Chen</div>
+                                <div style="font-size: 12px; color: #666;">Marketing • 2h ago</div>
+                            </div>
+                        </div>
+                        <p>Looking for study partners for MKTG3001 final exam. Anyone interested in forming a study group?</p>
+                        <div style="margin-top: 10px; display: flex; gap: 15px; font-size: 14px; color: #666;">
+                            <span onclick="likePost(this)" style="cursor: pointer;">👍 12</span>
+                            <span onclick="showReplies(this)" style="cursor: pointer;">💬 Reply</span>
+                        </div>
+                    </div>
+
+                    <div class="forum-post">
+                        <div class="post-header">
+                            <div class="user-avatar">J</div>
+                            <div>
+                                <div style="font-weight: bold;">Jeremy Wong</div>
+                                <div style="font-size: 12px; color: #666;">Computer Science • 4h ago</div>
+                            </div>
+                        </div>
+                        <p>Has anyone taken COMP3230? How difficult is the coursework compared to COMP2396?</p>
+                        <div style="margin-top: 10px; display: flex; gap: 15px; font-size: 14px; color: #666;">
+                            <span onclick="likePost(this)" style="cursor: pointer;">👍 8</span>
+                            <span onclick="showReplies(this)" style="cursor: pointer;">💬 Reply</span>
+                        </div>
+                    </div>
+
+                    <div class="forum-post">
+                        <div class="post-header">
+                            <div class="user-avatar">C</div>
+                            <div>
+                                <div style="font-weight: bold;">Candy Liu</div>
+                                <div style="font-size: 12px; color: #666;">Law • 6h ago</div>
+                            </div>
+                        </div>
+                        <p>Free tutoring sessions for Constitutional Law available this weekend. DM me if interested!</p>
+                        <div style="margin-top: 10px; display: flex; gap: 15px; font-size: 14px; color: #666;">
+                            <span onclick="likePost(this)" style="cursor: pointer;">👍 25</span>
+                            <span onclick="showReplies(this)" style="cursor: pointer;">💬 Reply</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="new-post-btn" onclick="showPostForm()">+</button>
+            </div>
+
+            <!-- Messages Page -->
+            <div id="messagesPage" class="page">
+                <h2 style="margin-bottom: 20px; color: #50C878;">Messages</h2>
+                <div class="message-list">
+                    <div class="message-item" onclick="openChat('Alice', '👩‍🎓')">
+                        <div class="user-avatar">👩‍🎓</div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: bold;">Alice Chen</div>
+                            <div style="font-size: 14px; color: #666;">Hey! Ready for our study session?</div>
+                        </div>
+                        <div style="font-size: 12px; color: #666;">2m</div>
+                    </div>
+                    
+                    <div class="message-item" onclick="openChat('Jeremy', '👨‍💻')">
+                        <div class="user-avatar">👨‍💻</div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: bold;">Jeremy Wong</div>
+                            <div style="font-size: 14px; color: #666;">Thanks for the coding help!</div>
+                        </div>
+                        <div style="font-size: 12px; color: #666;">1h</div>
+                    </div>
+
+                    <div class="message-item" onclick="openChat('Candy', '👩‍⚖️')">
+                        <div class="user-avatar">👩‍⚖️</div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: bold;">Candy Liu</div>
+                            <div style="font-size: 14px; color: #666;">See you at the library!</div>
+                        </div>
+                        <div style="font-size: 12px; color: #666;">3h</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Page -->
+            <div id="profilePage" class="page">
+                <div class="profile-page">
+                    <!-- Profile Header -->
+                    <div class="profile-header">
+                        <div class="profile-cover">
+                            <div class="profile-avatar-large">👤</div>
+                            <div class="profile-status">
+                                <div class="status-indicator online"></div>
+                                <span>Online</span>
+                            </div>
+                        </div>
+                        <div class="profile-basic-info">
+                            <h2>Your Name</h2>
+                            <p class="profile-subtitle">Information Management • Year 2</p>
+                            <div class="profile-stats">
+                                <div class="stat-item">
+                                    <div class="stat-number">24</div>
+                                    <div class="stat-label">Study Sessions</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-number">12</div>
+                                    <div class="stat-label">Connections</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-number">4.8</div>
+                                    <div class="stat-label">Rating</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="quick-actions">
+                        <button class="action-btn primary" onclick="editProfile()">
+                            <span class="action-icon">✏️</span>
+                            Edit Profile
+                        </button>
+                        <button class="action-btn secondary" onclick="shareProfile()">
+                            <span class="action-icon">📤</span>
+                            Share
+                        </button>
+                    </div>
+
+                    <!-- Profile Sections -->
+                    <div class="profile-section" onclick="editStudyPreferences()" style="cursor: pointer;">
+                        <div class="section-header">
+                            <h3>📚 Study Preferences</h3>
+                        </div>
+                        <div class="preference-grid">
+                            <div class="preference-item" onclick="showTimeOptions()" style="cursor: pointer;">
+                                <div class="preference-icon">🕐</div>
+                                <div class="preference-content">
+                                    <div class="preference-title">Study Time</div>
+                                    <div class="preference-value" id="selectedStudyTime">Evening (6-10 PM)</div>
+                                </div>
+                            </div>
+                            <div class="preference-item" style="flex-direction: column; align-items: flex-start; padding: 15px;">
+                                <div style="display: flex; align-items: center; gap: 12px; width: 100%; margin-bottom: 10px;">
+                                    <div class="preference-icon">👥</div>
+                                    <div class="preference-content">
+                                        <div class="preference-title">Study Group</div>
+                                        <div class="preference-value">Group Study</div>
+                                    </div>
+                                </div>
+                                <div id="studyGroupList" style="width: 100%; margin-bottom: 10px;">
+                                    <div style="color: #666; font-size: 12px; font-style: italic;">No group members yet</div>
+                                </div>
+                                <button onclick="addGroupMember()" style="background: #50C878; color: white; border: none; border-radius: 15px; padding: 6px 12px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                                    <span>+</span> Add Member
+                                </button>
+                            </div>
+                            <div class="preference-item" onclick="editSubjects()" style="cursor: pointer;">
+                                <div class="preference-icon">📖</div>
+                                <div class="preference-content">
+                                    <div class="preference-title">Subjects</div>
+                                    <div class="preference-value">Math, Computer Science</div>
+                                </div>
+                            </div>
+                            <div class="preference-item" onclick="editLocation()" style="cursor: pointer;">
+                                <div class="preference-icon">📍</div>
+                                <div class="preference-content">
+                                    <div class="preference-title">Location</div>
+                                    <div class="preference-value">Main Library</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Achievements -->
+                    <div class="profile-section">
+                        <div class="section-header">
+                            <h3>🏆 Achievements</h3>
+                        </div>
+                        <div class="achievements-grid">
+                            <div class="achievement-badge earned" onclick="viewAchievementDetails('Study Streak')" style="cursor: pointer;">
+                                <div class="badge-icon">🎯</div>
+                                <div class="badge-title">Study Streak</div>
+                                <div class="badge-desc">7 days in a row</div>
+                            </div>
+                            <div class="achievement-badge earned" onclick="viewAchievementDetails('Team Player')" style="cursor: pointer;">
+                                <div class="badge-icon">🤝</div>
+                                <div class="badge-title">Team Player</div>
+                                <div class="badge-desc">10+ group sessions</div>
+                            </div>
+                            <div class="achievement-badge" onclick="viewAchievementDetails('Top Rated')" style="cursor: pointer;">
+                                <div class="badge-icon">⭐</div>
+                                <div class="badge-title">Top Rated</div>
+                                <div class="badge-desc">5.0 rating</div>
+                            </div>
+                            <div class="achievement-badge" onclick="viewAchievementDetails('Bookworm')" style="cursor: pointer;">
+                                <div class="badge-icon">📚</div>
+                                <div class="badge-title">Bookworm</div>
+                                <div class="badge-desc">50+ sessions</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="profile-section">
+                        <div class="section-header">
+                            <h3>📈 Recent Activity</h3>
+                        </div>
+                        <div class="activity-list">
+                            <div class="activity-item" onclick="viewActivityDetails('study')" style="cursor: pointer;">
+                                <div class="activity-icon">📚</div>
+                                <div class="activity-content">
+                                    <div class="activity-title">Completed study session with Alice</div>
+                                    <div class="activity-time">2 hours ago</div>
+                                </div>
+                            </div>
+                            <div class="activity-item" onclick="viewActivityDetails('rating')" style="cursor: pointer;">
+                                <div class="activity-icon">⭐</div>
+                                <div class="activity-content">
+                                    <div class="activity-title">Received 5-star rating from Jeremy</div>
+                                    <div class="activity-time">1 day ago</div>
+                                </div>
+                            </div>
+                            <div class="activity-item" onclick="viewActivityDetails('streak')" style="cursor: pointer;">
+                                <div class="activity-icon">🎯</div>
+                                <div class="activity-content">
+                                    <div class="activity-title">Achieved 7-day study streak</div>
+                                    <div class="activity-time">2 days ago</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Settings -->
+                    <div class="profile-section">
+                        <div class="section-header">
+                            <h3>⚙️ Settings</h3>
+                        </div>
+                        <div class="settings-list">
+                            <div class="setting-item" onclick="showPrivacySettings()">
+                                <div class="setting-icon">🔒</div>
+                                <div class="setting-content">
+                                    <div class="setting-title">Privacy Settings</div>
+                                    <div class="setting-desc">Manage your privacy preferences</div>
+                                </div>
+                                <div class="setting-arrow">›</div>
+                            </div>
+                            <div class="setting-item" onclick="showNotificationSettings()">
+                                <div class="setting-icon">🔔</div>
+                                <div class="setting-content">
+                                    <div class="setting-title">Notifications</div>
+                                    <div class="setting-desc">Control your notification preferences</div>
+                                </div>
+                                <div class="setting-arrow">›</div>
+                            </div>
+                            <div class="setting-item" onclick="showHelpCenter()">
+                                <div class="setting-icon">❓</div>
+                                <div class="setting-content">
+                                    <div class="setting-title">Help Center</div>
+                                    <div class="setting-desc">Get help and support</div>
+                                </div>
+                                <div class="setting-arrow">›</div>
+                            </div>
+                            <div class="setting-item logout-item" onclick="logout()">
+                                <div class="setting-icon">🚪</div>
+                                <div class="setting-content">
+                                    <div class="setting-title">Logout</div>
+                                    <div class="setting-desc">Sign out of your account</div>
+                                </div>
+                                <div class="setting-arrow">›</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <button class="nav-btn" onclick="switchPage('book')">
+                <div class="nav-icon">📚</div>
+                <div class="nav-text">Book</div>
+            </button>
+            <button class="nav-btn" onclick="switchPage('search')">
+                <div class="nav-icon">💬</div>
+                <div class="nav-text">Forum</div>
+            </button>
+            <button class="nav-btn active" onclick="switchPage('home')">
+                <div class="nav-icon">🏠</div>
+                <div class="nav-text">Home</div>
+            </button>
+            <button class="nav-btn" onclick="switchPage('messages')">
+                <div class="nav-icon">💬</div>
+                <div class="nav-text">Messages</div>
+            </button>
+            <button class="nav-btn" onclick="switchPage('profile')">
+                <div class="nav-icon">👤</div>
+                <div class="nav-text">Profile</div>
+            </button>
+        </div>
+    </div>
+
+    <!-- Match Popup -->
+    <div class="match-popup" id="matchPopup">
+        <div class="match-content">
+            <h2>It's a Match! 🎉</h2>
+            <p>You and <span id="matchName"></span> both want to study together!</p>
+            <button class="btn" onclick="startChat()">Let's Chat Now!</button>
+            <button class="btn" style="background: #6c757d; margin-left: 10px;" onclick="closeMatch()">Maybe Later</button>
+        </div>
+    </div>
+
+    <!-- Chat Window -->
+    <div class="chat-window" id="chatWindow">
+        <div class="chat-header">
+            <div class="chat-user-info">
+                <button class="chat-btn" onclick="closeChat()">←</button>
+                <div class="user-avatar" id="chatAvatar">👩‍🎓</div>
+                <div>
+                    <div style="font-weight: bold;" id="chatUserName">Alice</div>
+                    <div style="font-size: 12px; opacity: 0.8;">Online</div>
+                </div>
+            </div>
+            <div class="chat-controls">
+                <button class="chat-btn" onclick="startCall()" title="Call">📞</button>
+                <button class="chat-btn" onclick="startVideoCall()" title="Video Call">📹</button>
+                <button class="chat-btn" onclick="toggleTranslate()" title="Translate">🌐</button>
+                <button class="chat-btn" onclick="showSpaceBooking()" title="Book Space">📍</button>
+            </div>
+        </div>
+        
+        <div class="chat-messages" id="chatMessages">
+            <div class="message received">
+                <div class="message-bubble">Hey! Ready for our study session?</div>
+            </div>
+            <div class="message sent">
+                <div class="message-bubble">Yes! What time works for you?</div>
+            </div>
+            <div class="message received">
+                <div class="message-bubble">How about 3 PM at the Main Library?</div>
+            </div>
+        </div>
+        
+        <div class="chat-input">
+            <input type="text" class="message-input" id="messageInput" placeholder="Type a message..." onkeypress="handleEnter(event)">
+            <button class="send-btn" onclick="sendMessage()">➤</button>
+        </div>
+    </div>
+
+    <!-- Call Window -->
+    <div class="call-window" id="callWindow">
+        <div class="call-avatar" id="callAvatar">👩‍🎓</div>
+        <div class="call-name" id="callName">Alice Chen</div>
+        <div class="call-status">Calling...</div>
+        <button class="end-call-btn" onclick="endCall()">📞</button>
+    </div>
+
+    <!-- Space Booking Mini Window -->
+    <div class="space-booking-mini" id="spaceBookingMini">
+        <div class="drag-handle" id="dragHandle">⋮⋮</div>
+        <button class="close-btn" onclick="hideSpaceBooking()">×</button>
+        <h4 style="margin-bottom: 15px; margin-top: 25px;">Quick Book</h4>
+        <div style="margin-bottom: 10px;">
+            <strong>Main Library</strong>
+            <span style="float: right; background: #50C878; color: white; padding: 2px 8px; border-radius: 10px; font-size: 12px;">12 available</span>
+        </div>
+        <div class="time-slots">
+            <div class="time-slot" onclick="quickBook('Main Library', '2:00 PM')">2:00 PM</div>
+            <div class="time-slot" onclick="quickBook('Main Library', '4:00 PM')">4:00 PM</div>
+            <div class="time-slot" onclick="quickBook('Main Library', '6:00 PM')">6:00 PM</div>
+        </div>
+    </div>
+
+    <!-- Calendar Popup -->
+    <div class="calendar-popup" id="calendarPopup">
+        <h3 style="margin-bottom: 15px;">Select Date</h3>
+        <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-bottom: 15px;">
+            <div style="text-align: center; font-weight: bold; padding: 5px;">S</div>
+            <div style="text-align: center; font-weight: bold; padding: 5px;">M</div>
+            <div style="text-align: center; font-weight: bold; padding: 5px;">T</div>
+            <div style="text-align: center; font-weight: bold; padding: 5px;">W</div>
+            <div style="text-align: center; font-weight: bold; padding: 5px;">T</div>
+            <div style="text-align: center; font-weight: bold; padding: 5px;">F</div>
+            <div style="text-align: center; font-weight: bold; padding: 5px;">S</div>
+        </div>
+        <div id="calendarDays" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-bottom: 15px;">
+            <!-- Calendar days will be generated by JavaScript -->
+        </div>
+        <div style="text-align: center;">
+            <button class="btn" onclick="confirmBooking()">Confirm Booking</button>
+            <button class="btn" style="background: #6c757d; margin-left: 10px;" onclick="closeCalendar()">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Edit Profile Popup -->
+    <div class="calendar-popup" id="editProfilePopup" style="width: 350px;">
+        <button class="close-btn" onclick="closeEditProfile()">×</button>
+        <h3 style="margin-bottom: 20px;">Edit Profile</h3>
+        <div style="margin-bottom: 15px;">
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Name:</label>
+            <input type="text" id="editName" value="Your Name" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+        </div>
+        <div style="margin-bottom: 15px;">
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Major:</label>
+            <select id="editMajor" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                <option>Information Management</option>
+                <option>Marketing</option>
+                <option>Computer Science</option>
+                <option>Law</option>
+                <option>Engineering</option>
+                <option>Psychology</option>
+                <option>Business</option>
+                <option>Medicine</option>
+            </select>
+        </div>
+        <div style="margin-bottom: 15px;">
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Year:</label>
+            <select id="editYear" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                <option>Year 1</option>
+                <option selected>Year 2</option>
+                <option>Year 3</option>
+                <option>Year 4</option>
+                <option>Graduate</option>
+            </select>
+        </div>
+        <div style="margin-bottom: 15px;">
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Study Style:</label>
+            <select id="editStudyStyle" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                <option selected>Group Study</option>
+                <option>Individual Study</option>
+                <option>Both</option>
+            </select>
+        </div>
+        <div style="text-align: center; margin-top: 20px;">
+            <button class="btn" onclick="saveProfile()">Save Changes</button>
+            <button class="btn" style="background: #6c757d; margin-left: 10px;" onclick="closeEditProfile()">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Notification Settings Popup -->
+    <div class="settings-popup" id="notificationSettingsPopup">
+        <button class="close-btn" onclick="closeNotificationSettings()">×</button>
+        <h3 style="margin-bottom: 20px;">🔔 Notification Settings</h3>
+        
+        <div class="notification-item">
+            <div>
+                <div style="font-weight: bold;">New Messages</div>
+                <div style="font-size: 12px; color: #666;">Get notified when you receive messages</div>
+            </div>
+            <div class="toggle-switch active" onclick="toggleNotification(this)">
+                <div class="toggle-slider"></div>
+            </div>
+        </div>
+        
+        <div class="notification-item">
+            <div>
+               
