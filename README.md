@@ -1,11 +1,11 @@
-# COMP2113-GroupPrj-Boaz-Ricky
+# 2048 Boss Battle - COMP2113 Project
 
 ## Quick Navigation
 - [Game Description](#game-description)
 - [Features](#features)
 - [Installation](#installation)
-- [How to Play]
-- [Team] LI Yik Kei (3036370786), LAI Kwan Yu (3036327040)
+- [How to Play](#how-to-play)
+- [Team](#team)
 
 ## Game Description
 A unique twist on classic 2048 where your tile combinations damage a boss monster!
@@ -19,3 +19,8 @@ A unique twist on classic 2048 where your tile combinations damage a boss monste
 - ✅ Dynamic board sizes
 
 ## Installation
+```bash
+make
+./2048
+```
+## How to Play
